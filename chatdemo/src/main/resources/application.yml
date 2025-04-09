@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: chatdemo
+  data:
+    mongodb:
+      uri: mongodb+srv://ttkhk20:ttkhk20cht@kien.pab3o.mongodb.net/
+      database: chatapp
+#  redis:
+#    host: localhost
+#    port: 6379
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
+
+server:
+  port: 9596
+
+jwt:
+  secret: ThisIsASecretKeyThatIsAtLeast32BytesLongqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+  expiration: 86400000
+  refresh:
+    secret: AnotherSecretKeyThatIsAtLeast32BytesLongqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+    expiration: 604800000
+#websocket:
+#  stomp:
+#    endpoint: /chat
+#    allowed-origins: "*"
+#    broker-prefix: /topic
+#    app-prefix: /app
+socketio:
+  host: 0.0.0.0
+  port: 9597
+firebase:
+  path: test1-2298b-firebase-adminsdk-fbsvc-8bf06ed4bb.json
+
