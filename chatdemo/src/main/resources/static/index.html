@@ -211,7 +211,7 @@
         // Kết nối Socket.IO
         function connectSocketIO(token) {
             console.log('Attempting to connect to Socket.IO...');
-            socketIO = io('http://192.191.3.101:9597', {
+            socketIO = io('http://192.168.1.41:9597', {
                 auth: { token: token }
             });
 
@@ -257,7 +257,7 @@
         loginButton.onclick = () => {
             const email = loginUsername.value;
             const password = loginPassword.value;
-            fetch('http://192.191.3.101:9596/api/auth/login', {
+            fetch('http://192.168.1.41:9596/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -283,7 +283,7 @@
 
         // Load danh sách người dùng
         function loadUsers() {
-            fetch('http://192.191.3.101:9596/api/users/getAllusers', {
+            fetch('http://192.168.1.41:9596/api/users/getAllusers', {
                 headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
             })
                 .then(response => {
@@ -295,7 +295,7 @@
                     listUser = data;
                     data.forEach(user => {
                         if (user.userId !== currentUserId) {
-                            fetch(`http://192.191.3.101:9596/api/start-chat`, {
+                            fetch(`http://192.168.1.41:9596/api/start-chat`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -313,7 +313,7 @@
                                     userList.appendChild(li);
 
                                     if (!lastMessages.has(chatId)) {
-                                        fetch(`http://192.191.3.101:9596/api/messages/${chatId}`, {
+                                        fetch(`http://192.168.1.41:9596/api/messages/${chatId}`, {
                                             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                                         })
                                             .then(response => response.json())
@@ -334,7 +334,7 @@
         }
         // Load danh sách nhóm
         function loadGroups() {
-            fetch(`http://192.191.3.101:9596/api/groups/${currentUserId}`, {
+            fetch(`http://192.168.1.41:9596/api/groups/${currentUserId}`, {
                 headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
             })
                 .then(response => {
@@ -353,7 +353,7 @@
                         groupList.appendChild(li);
 
                         if (!lastMessages.has(chatId)) {
-                            fetch(`http://192.191.3.101:9596/api/messages/${chatId}`, {
+                            fetch(`http://192.168.1.41:9596/api/messages/${chatId}`, {
                                 headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                             })
                                 .then(response => response.json())
@@ -373,7 +373,7 @@
         // Tham gia tất cả các phòng chat
         // Tham gia tất cả các phòng chat
         function joinAllChats() {
-            fetch(`http://192.191.3.101:9596/api/chats/${currentUserId}`, {
+            fetch(`http://192.168.1.41:9596/api/chats/${currentUserId}`, {
                 headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
             })
                 .then(response => {
@@ -382,7 +382,7 @@
                 })
                 .then(chats => {
                     chats.forEach(chatId => {
-                        fetch(`http://192.191.3.101:9596/api/messages/${chatId}`, {
+                        fetch(`http://192.168.1.41:9596/api/messages/${chatId}`, {
                             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                         })
                             .then(response => response.json())
@@ -463,7 +463,7 @@
 
         // Bắt đầu chat riêng
         function startPrivateChat(userId, username) {
-            fetch('http://192.191.3.101:9596/api/start-chat', {
+            fetch('http://192.168.1.41:9596/api/start-chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -520,29 +520,14 @@
         // Thiết lập chat
         function setupChat() {
             if (!currentChatId) return;
-
             loadMessages();
-
-            socketIO.on(`message_${currentChatId}`, (newMessage) => {
-                if (newMessage) {
-                    addMessage(newMessage.content, newMessage.senderId, newMessage.id, newMessage.reactions || {});
-                }
-            });
-
-            socketIO.on(`typing_${currentChatId}`, (typingUpdate) => {
-                handleTypingUpdate(typingUpdate);
-            });
-
-            socketIO.on(`reaction_${currentChatId}`, (reactionUpdate) => {
-                updateReaction(reactionUpdate);
-            });
         }
 
         // Load tin nhắn
         function loadMessages() {
             if (!currentChatId) return;
 
-            fetch(`http://192.191.3.101:9596/api/messages/${currentChatId}`, {
+            fetch(`http://192.168.1.41:9596/api/messages/${currentChatId}`, {
                 headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
             })
                 .then(response => response.json())
@@ -628,7 +613,7 @@
         }
 
         function addReaction(messageId, reactionType) {
-            fetch('http://192.191.3.101:9596/api/add-reaction', {
+            fetch('http://192.168.1.41:9596/api/add-reaction', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -698,7 +683,7 @@
             const content = messageInput.value.trim();
             if (!content || !currentChatId || !currentUserId) return;
 
-            fetch('http://192.191.3.101:9596/api/send-message', {
+            fetch('http://192.168.1.41:9596/api/send-message', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -715,8 +700,6 @@
                     return response.text();
                 })
                 .then(messageId => {
-                    lastMessages.set(currentChatId, content);
-                    updateChatList(currentChatId); // Cập nhật ngay cho người gửi
                     messageInput.value = '';
                 })
                 .catch(error => console.error('Error sending message:', error));
@@ -732,7 +715,7 @@
         messageInput.oninput = () => {
             if (!currentChatId || !currentUserId || !currentUsername) return;
 
-            fetch('http://192.191.3.101:9596/api/typing', {
+            fetch('http://192.168.1.41:9596/api/typing', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -781,7 +764,7 @@
 
             const userIds = [...selectedUserIds, currentUserId];
 
-            fetch('http://192.191.3.101:9596/api/create-group', {
+            fetch('http://192.168.1.41:9596/api/create-group', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

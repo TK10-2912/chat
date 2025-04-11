@@ -20,7 +20,7 @@ public class SocketIOServerConfig {
         Configuration config = new Configuration();
         config.setHostname(host);
         config.setPort(port);
-        config.setOrigin("http://localhost:9596"); // Cho phép origin từ frontend
+        config.setOrigin("http://192.168.1.41:9596"); // Cho phép origin từ frontend
         SocketIOServer server = new SocketIOServer(config);
 
         // Xử lý kết nối
